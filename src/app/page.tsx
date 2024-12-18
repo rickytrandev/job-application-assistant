@@ -2,15 +2,41 @@
 
 import { useState } from "react"
 
-function page(props) {
+function Page() {
   const [jobUrl, setJobUrl] = useState("")
   const [resumeFile, setResumeFile] = useState<null | File>(null)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    // console.log(jobUrl)
+
+    const response = await fetch('api/extractJobDescription', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: jobUrl }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Error:', errorText)
+      return
+    }
+
+    try {
+      const result = await response.json()
+      console.log(result)
+    } catch (error) {
+      console.error('Failed to parse JSON:', error)
+    }
+  }
 
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-2xl font-bold mb-4-2xl">Job Application Assistant</h1>
-      <form action="">
-        <div className=" flex flex-col">
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-col">
           <label htmlFor="jobUrl">Job Posting URL (LinkedIn)</label>
           <input
             id="jobUrl"
@@ -29,7 +55,7 @@ function page(props) {
             type="file"
             accept=".pdf"
             onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-            required
+            // required
             multiple={false}
             className="border border-2 rounded p-2"
           />
@@ -40,4 +66,4 @@ function page(props) {
   )
 }
 
-export default page
+export default Page
