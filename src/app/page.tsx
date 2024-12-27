@@ -41,7 +41,7 @@ function Page() {
           <input
             id="jobUrl"
             type="url"
-            placeholder="https://linkedin.com/job-posting"
+            placeholder="e.g. job-boards.greenhouse.io/job-posting"
             value={jobUrl}
             onChange={(e) => setJobUrl(e.target.value)}
             required

@@ -3,8 +3,9 @@ import { NextResponse } from 'next/server';
 
 const jobBoardSelectors: { [key: string]: string } = {
   'indeed.com': '.jobsearch-jobDescriptionText',
-  'linkedin.com': '#job-details',
+  'linkedin.com': '.jobs-description__container',
   'monster.com': '.job-description',
+  'job-boards.greenhouse.io': '.job-post',
 };
 
 const getDomain = (url: string): string | null => {
@@ -12,10 +13,11 @@ const getDomain = (url: string): string | null => {
   return match ? match[2] : null;
 };
 
+
 export async function POST(request: Request) {
   try {
-    console.log('hey hi')
     const { url } = await request.json();
+    console.log('URL:', url);
 
     if (!url) {
       console.error('URL is required');
@@ -30,11 +32,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `No scraping logic found for domain: ${domain}` }, { status: 400 });
     }
 
+    console.log('Selector:', selector);
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
     });
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(url, { waitUntil: 'networkidle2' });
+
+    // Wait for the selector to appear on the page with increased timeout
+    await page.waitForSelector(selector, { timeout: 30000 });
 
     const jobDescription = await page.$eval(selector, (element: Element) => {
       return (element as HTMLElement).innerText;
