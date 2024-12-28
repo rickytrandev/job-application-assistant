@@ -14,4 +14,4 @@ This PR:
 
 ## Reviewers
 
-Dana Zack, Jamie Francisco, & Ricky Tran
+Ricky Tran
