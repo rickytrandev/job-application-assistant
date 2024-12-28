@@ -1,43 +1,33 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { scrapeJobDescription } from "./services/api";
 
 function Page() {
   const [jobUrl, setJobUrl] = useState("")
   const [resumeFile, setResumeFile] = useState<null | File>(null)
+  const [jobDescription, setJobDescription] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
+  const [interviewQuestions, setInterviewQuestions] = useState<String[]>([]);
+
+    // useEffect(() => {console.log(resumeFile)}, [resumeFile])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // console.log(jobUrl)
 
-    const response = await fetch('api/extractJobDescription', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ url: jobUrl }),
-    })
+    const jobDescription = await scrapeJobDescription(jobUrl)
+    setJobDescription(jobDescription)
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Error:', errorText)
-      return
-    }
-
-    try {
-      const result = await response.json()
-      console.log(result)
-    } catch (error) {
-      console.error('Failed to parse JSON:', error)
-    }
+    
+   
   }
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-4-2xl">Job Application Assistant</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="container mx-auto p-8 h-screen flex flex-col gap-2">
+      <h1 className="text-2xl font-bold">Job Application Assistant</h1>
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit}>        
         <div className="flex flex-col">
-          <label htmlFor="jobUrl">Job Posting URL (LinkedIn)</label>
+          <label htmlFor="jobUrl">Job Posting URL</label>
           <input
             id="jobUrl"
             type="url"
@@ -55,13 +45,19 @@ function Page() {
             type="file"
             accept=".pdf"
             onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-            // required
+            // required TODO: remove when in prod
             multiple={false}
             className="border border-2 rounded p-2"
           />
         </div>
-        <button type="submit" className="bg-black text-white rounded px-4 py-2">Generate Cover Letter and Questions</button>
+        <button type="submit" className="bg-black text-white rounded px-4 py-2">
+          Generate Cover Letter and Questions
+        </button>
       </form>
+      <div className="border border-2 rounded p-2 h-1/2 flex flex-col">
+        <h2 className="text-xl font-bold mb-4">Generated Cover Letter</h2>
+        <div className="border border-2 rounded p-2 h-full"><p>cover letter content</p></div>
+      </div>
     </div>
   )
 }

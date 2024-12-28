@@ -17,7 +17,6 @@ const getDomain = (url: string): string | null => {
 export async function POST(request: Request) {
   try {
     const { url } = await request.json();
-    console.log('URL:', url);
 
     if (!url) {
       console.error('URL is required');
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
 
     console.log('Selector:', selector);
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: false, //TODO: turn true in PROD
     });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
