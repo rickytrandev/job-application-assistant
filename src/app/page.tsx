@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { scrapeJobDescription } from "./services/api";
+import { getInterviewQuestions, scrapeJobDescription } from "./services/api";
 
 function Page() {
   const [jobUrl, setJobUrl] = useState("")
@@ -18,9 +18,14 @@ function Page() {
     const jobDescription = await scrapeJobDescription(jobUrl)
     setJobDescription(jobDescription)
 
-    
+    const interviewQuestions = await getInterviewQuestions(jobDescription)
+    setInterviewQuestions(interviewQuestions)
    
   }
+
+  useEffect(() => {
+    console.log(interviewQuestions)
+  }, interviewQuestions)
 
   return (
     <div className="container mx-auto p-8 h-screen flex flex-col gap-2">

@@ -12,6 +12,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "next": "15.1.1",
+    "openai": "^4.77.0",
     "puppeteer": "^23.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
