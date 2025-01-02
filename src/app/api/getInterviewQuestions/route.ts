@@ -30,6 +30,9 @@ export const POST = async (request: Request) => {
       throw new Error("No response from OpenAI")
     }
 
+    interviewQuestions = interviewQuestions.replace(/```json|```/g, "").trim();
+    interviewQuestions = JSON.parse(interviewQuestions) 
+
     return NextResponse.json({ interviewQuestions })
     
   } catch (error) {

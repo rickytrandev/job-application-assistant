@@ -19,13 +19,11 @@ function Page() {
     setJobDescription(jobDescription)
 
     const interviewQuestions = await getInterviewQuestions(jobDescription)
+    console.log(interviewQuestions[0])
+    console.log(interviewQuestions)
     setInterviewQuestions(interviewQuestions)
    
   }
-
-  useEffect(() => {
-    console.log(interviewQuestions)
-  }, interviewQuestions)
 
   return (
     <div className="container mx-auto p-8 h-screen flex flex-col gap-2">
